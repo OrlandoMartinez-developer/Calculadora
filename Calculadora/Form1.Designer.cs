@@ -2,7 +2,7 @@
 
 namespace Calculadora
 {
-    partial class Form1
+    partial class Calculadora
     {
         /// <summary>
         /// Required designer variable.
@@ -30,6 +30,7 @@ namespace Calculadora
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Calculadora));
             this.txtDisplay = new System.Windows.Forms.TextBox();
             this.btnIgual = new System.Windows.Forms.Button();
             this.btnP = new System.Windows.Forms.Button();
@@ -56,6 +57,7 @@ namespace Calculadora
             this.button23 = new System.Windows.Forms.Button();
             this.button24 = new System.Windows.Forms.Button();
             this.button25 = new System.Windows.Forms.Button();
+            this.btnDel = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // txtDisplay
@@ -67,6 +69,7 @@ namespace Calculadora
             this.txtDisplay.ReadOnly = true;
             this.txtDisplay.Size = new System.Drawing.Size(323, 51);
             this.txtDisplay.TabIndex = 0;
+            this.txtDisplay.TextChanged += new System.EventHandler(this.txtDisplay_TextChanged);
             // 
             // btnIgual
             // 
@@ -105,7 +108,7 @@ namespace Calculadora
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 4;
-            this.button4.Text = "/";
+            this.button4.Text = "÷";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click_1);
             // 
@@ -275,7 +278,7 @@ namespace Calculadora
             this.button21.Name = "button21";
             this.button21.Size = new System.Drawing.Size(75, 23);
             this.button21.TabIndex = 21;
-            this.button21.Text = "sqrt";
+            this.button21.Text = "√";
             this.button21.UseVisualStyleBackColor = true;
             this.button21.Click += new System.EventHandler(this.button21_Click);
             // 
@@ -320,12 +323,24 @@ namespace Calculadora
             this.button25.UseVisualStyleBackColor = false;
             this.button25.Click += new System.EventHandler(this.button25_Click_1);
             // 
-            // Form1
+            // btnDel
+            // 
+            this.btnDel.BackColor = System.Drawing.Color.DarkOrange;
+            this.btnDel.Location = new System.Drawing.Point(201, 84);
+            this.btnDel.Name = "btnDel";
+            this.btnDel.Size = new System.Drawing.Size(75, 23);
+            this.btnDel.TabIndex = 26;
+            this.btnDel.Text = "⌫";
+            this.btnDel.UseVisualStyleBackColor = false;
+            this.btnDel.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // Calculadora
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ControlDarkDark;
-            this.ClientSize = new System.Drawing.Size(382, 305);
+            this.ClientSize = new System.Drawing.Size(392, 304);
+            this.Controls.Add(this.btnDel);
             this.Controls.Add(this.button25);
             this.Controls.Add(this.button24);
             this.Controls.Add(this.button23);
@@ -352,8 +367,10 @@ namespace Calculadora
             this.Controls.Add(this.btnP);
             this.Controls.Add(this.btnIgual);
             this.Controls.Add(this.txtDisplay);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "Calculadora";
+            this.Text = "Calculadora";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -362,7 +379,6 @@ namespace Calculadora
 
         private void button22_Click_1(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
             txtDisplay.Text += "log(";
         }
 
@@ -394,6 +410,7 @@ namespace Calculadora
         private System.Windows.Forms.Button button23;
         private System.Windows.Forms.Button button24;
         private System.Windows.Forms.Button button25;
+        private System.Windows.Forms.Button btnDel;
     }
 }
 
