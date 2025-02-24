@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace Calculadora
 {
@@ -382,6 +384,49 @@ namespace Calculadora
             SeleccionarFuncionEspecial("log");
         }
 
+        private void PersonaLizarInterfaz()
+        {
+            this.BackColor = Color.FromArgb(30, 30, 30);
+            this.ForeColor = Color.White;
+            this.FormBorderStyle = FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
+
+            txtDisplay.BackColor = Color.FromArgb(50, 50, 50);
+            txtDisplay.ForeColor = Color.White;
+            txtDisplay.Font = new Font("Segoe UI", 18, FontStyle.Bold);
+            txtDisplay.BorderStyle = BorderStyle.None;
+            txtDisplay.TextAlign = HorizontalAlignment.Right;
+
+            foreach (Control control in this.Controls)
+            {
+                if (control is Button)
+                {
+                    Button btn = (Button)control;
+                    btn.BackColor = Color.FromArgb(50, 50, 50);
+                    btn.ForeColor = Color.White;
+                    btn.FlatStyle = FlatStyle.Flat;
+                    btn.FlatAppearance.BorderColor = Color.FromArgb(70, 70, 70);
+                    btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(70, 70, 70);
+                    btn.FlatAppearance.MouseDownBackColor = Color.FromArgb(90, 90, 90);
+                    btn.Font = new Font("Seogi UI", 7, FontStyle.Bold);
+                    btn.Cursor = Cursors.Hand;
+                }
+            }
+
+            btnIgual.BackColor = Color.FromArgb(0, 120, 215);
+            btnIgual.FlatAppearance.MouseOverBackColor = Color.FromArgb(0, 150, 255);
+            btnIgual.FlatAppearance.MouseDownBackColor = Color.FromArgb(0, 90, 175);
+
+            button25.BackColor = Color.FromArgb(215, 0, 0);
+            button25.FlatAppearance.MouseOverBackColor = Color.FromArgb(255, 50, 50);
+            button25.FlatAppearance.MouseDownBackColor = Color.FromArgb(175, 0, 0);
+
+            btnDel.BackColor = Color.FromArgb(215, 0, 0); // Rojo oscuro
+            btnDel.ForeColor = Color.White;
+            btnDel.Font = new Font("Segoe UI", 8, FontStyle.Bold); // Fuente más grande
+            btnDel.FlatAppearance.MouseOverBackColor = Color.FromArgb(255, 50, 50); // Rojo más claro al pasar el mouse
+            btnDel.FlatAppearance.MouseDownBackColor = Color.FromArgb(175, 0, 0); // Rojo más oscuro al hacer clic
+        }
         #endregion
 
         private System.Windows.Forms.TextBox txtDisplay;
