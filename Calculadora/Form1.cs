@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Data;
 using System.Drawing;
-using System.Linq.Expressions;
-using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows.Forms;
-
 
 namespace Calculadora
 {
@@ -18,12 +14,13 @@ namespace Calculadora
         {
             InitializeComponent();
             PersonaLizarInterfaz();
+            txtDisplay.KeyPress += Calculadora_KeyPress; 
+            txtDisplay.TextChanged += txtDisplay_TextChanged; 
         }
 
         private void PersonaLizarInterfaz()
         {
-
-            this.BackColor = Color.FromArgb(30,30,30);
+            this.BackColor = Color.FromArgb(30, 30, 30);
             this.ForeColor = Color.White;
             this.FormBorderStyle = FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
@@ -34,18 +31,18 @@ namespace Calculadora
             txtDisplay.BorderStyle = BorderStyle.None;
             txtDisplay.TextAlign = HorizontalAlignment.Right;
 
-
-            foreach (Control control in this.Controls) {
-
-                if (control is Button) { 
-                Button btn = (Button)control;
+            foreach (Control control in this.Controls)
+            {
+                if (control is Button)
+                {
+                    Button btn = (Button)control;
                     btn.BackColor = Color.FromArgb(50, 50, 50);
                     btn.ForeColor = Color.White;
                     btn.FlatStyle = FlatStyle.Flat;
                     btn.FlatAppearance.BorderColor = Color.FromArgb(70, 70, 70);
                     btn.FlatAppearance.MouseOverBackColor = Color.FromArgb(70, 70, 70);
                     btn.FlatAppearance.MouseDownBackColor = Color.FromArgb(90, 90, 90);
-                    btn.Font = new Font("Seogi UI", 7,FontStyle.Bold); 
+                    btn.Font = new Font("Seogi UI", 7, FontStyle.Bold);
                     btn.Cursor = Cursors.Hand;
                 }
             }
@@ -65,12 +62,10 @@ namespace Calculadora
             btnDel.FlatAppearance.MouseDownBackColor = Color.FromArgb(175, 0, 0); // Rojo más oscuro al hacer clic
         }
 
-        
         private void AgregarNumero(string numero)
         {
             if (nuevaOperacion)
             {
-                // Si se comienza con un número tras una operación, reinicia o continúa la operación
                 if (double.TryParse(txtDisplay.Text, out _))
                 {
                     txtDisplay.Text = "";
@@ -79,7 +74,6 @@ namespace Calculadora
             }
             if (!string.IsNullOrEmpty(txtDisplay.Text) && txtDisplay.Text[txtDisplay.Text.Length - 1] == ')')
             {
-                // Agrega un operador de multiplicación antes del número
                 txtDisplay.Text += " x ";
             }
             txtDisplay.Text += numero;
@@ -91,26 +85,49 @@ namespace Calculadora
             {
                 nuevaOperacion = false;
             }
+
             if (!string.IsNullOrWhiteSpace(txtDisplay.Text))
             {
-                txtDisplay.Text += operador;
+                char ultimoCaracter = txtDisplay.Text[txtDisplay.Text.Length - 1];
 
+                // Permitir el uso de '-' para números negativos al inicio o después de '('
+                if (operador == " - " && (ultimoCaracter == '(' || string.IsNullOrWhiteSpace(txtDisplay.Text)))
+                {
+                    txtDisplay.Text += "-";
+                }
+                // Permitir el uso de '-' después de otro operador para números negativos
+                else if (operador == " - " && EsOperador(ultimoCaracter.ToString()) && ultimoCaracter != '-')
+                {
+                    txtDisplay.Text += "-";
+                }
+                // Evitar dos operadores seguidos (excepto para el signo negativo)
+                else if (!EsOperador(ultimoCaracter.ToString()) || (operador == " - " && EsOperador(ultimoCaracter.ToString())))
+                {
+                    txtDisplay.Text += operador;
+                }
             }
+            // Permitir el primer operador si esta vacio el display
+            else if (operador == " - ")
+            {
+                txtDisplay.Text = "-";
+            }
+        }
+
+        private bool EsOperador(string caracter)
+        {
+            return caracter == "+" || caracter == "-" || caracter == "x" || caracter == "÷" || caracter == "^";
         }
         private void SeleccionarFuncionEspecial(string funcion)
         {
-            // Verifica si el último carácter es un número o un paréntesis de cierre
             if (!string.IsNullOrEmpty(txtDisplay.Text))
             {
                 char ultimoCaracter = txtDisplay.Text[txtDisplay.Text.Length - 1];
                 if (char.IsDigit(ultimoCaracter) || ultimoCaracter == ')')
                 {
-                    // Agrega un operador de multiplicación antes de la función
                     txtDisplay.Text += " x ";
                 }
             }
 
-            // Agrega la función especial con paréntesis
             txtDisplay.Text += funcion + "(";
         }
 
@@ -120,8 +137,9 @@ namespace Calculadora
             {
                 string expresion = txtDisplay.Text
                     .Replace("÷", "/")
-           .Replace("√(", "sqrt(")
-           .Replace("x", "*");
+                    .Replace("√(", "sqrt(")
+                    .Replace("x", "*");
+
                 double resultado = EvaluarFuncionesMatematicas(expresion);
                 txtDisplay.Text = resultado.ToString();
                 nuevaOperacion = true;
@@ -138,7 +156,6 @@ namespace Calculadora
 
         private double EvaluarFuncionesMatematicas(string expresion)
         {
-            // Evaluar funciones matemáticas avanzadas
             expresion = Regex.Replace(expresion, @"sin\(([^)]+)\)", match =>
                 Math.Sin(EvaluarFuncionesMatematicas(match.Groups[1].Value) * Math.PI / 180).ToString());
 
@@ -155,25 +172,31 @@ namespace Calculadora
                 Math.Log10(EvaluarFuncionesMatematicas(match.Groups[1].Value)).ToString());
 
             expresion = EvaluarPotenciacion(expresion);
-            // Ahora evalúa la expresión restante con DataTable
+
             var tabla = new DataTable();
             return Convert.ToDouble(tabla.Compute(expresion, null));
         }
 
         private string EvaluarPotenciacion(string expresion)
         {
-            return Regex.Replace(expresion, @"(\d+(\.\d+)?)\^(\d+(\.\d+)?)", match =>
+            while (Regex.IsMatch(expresion, @"(\d+(\.\d+)?|\([^()]+\))\^(\d+(\.\d+)?|\([^()]+\))"))
             {
-                double baseNum = Convert.ToDouble(match.Groups[1].Value);
-                double exponent = Convert.ToDouble(match.Groups[3].Value);
-                return Math.Pow(baseNum, exponent).ToString();
-            });
+                expresion = Regex.Replace(expresion, @"(\d+(\.\d+)?|\([^()]+\))\^(\d+(\.\d+)?|\([^()]+\))", match =>
+                {
+                    string baseStr = match.Groups[1].Value;
+                    string exponentStr = match.Groups[3].Value;
+
+                    double baseNum = EvaluarFuncionesMatematicas(baseStr);
+                    double exponentNum = EvaluarFuncionesMatematicas(exponentStr);
+
+                    return Math.Pow(baseNum, exponentNum).ToString();
+                });
+            }
+            return expresion;
         }
 
         private void Form1_Load(object sender, EventArgs e)
-        {
-            // Inicializaciones o código que deseas ejecutar al cargar el formulario
-        }
+        { }
 
         private void button1_Click_1(object sender, EventArgs e)
         {
@@ -221,22 +244,11 @@ namespace Calculadora
 
         private void button17_Click(object sender, EventArgs e) => SeleccionarOperador("^");
 
-        private void button20_Click(object sender, EventArgs e)
-        {
-           
-            SeleccionarFuncionEspecial("tan");
-        }
+        private void button20_Click(object sender, EventArgs e) => SeleccionarFuncionEspecial("tan");
 
-        private void button19_Click(object sender, EventArgs e)
-        {
-           
-            SeleccionarFuncionEspecial("cos");
-        }
+        private void button19_Click(object sender, EventArgs e) => SeleccionarFuncionEspecial("cos");
 
-        private void button18_Click(object sender, EventArgs e)
-        {
-            SeleccionarFuncionEspecial("sin");
-        }
+        private void button18_Click(object sender, EventArgs e) => SeleccionarFuncionEspecial("sin");
 
         private void button21_Click(object sender, EventArgs e)
         {
@@ -244,13 +256,9 @@ namespace Calculadora
             string displayText = txtDisplay.Text;
             displayText = displayText.Replace("sqrt(", "√(");
             txtDisplay.Text = displayText;
-
         }
 
-        private void button22_Click(object sender, EventArgs e)
-        {
-            SeleccionarFuncionEspecial("log");
-        }
+        private void button22_Click(object sender, EventArgs e) => SeleccionarFuncionEspecial("log");
 
         private void button25_Click_1(object sender, EventArgs e)
         {
@@ -265,50 +273,85 @@ namespace Calculadora
 
         private void txtDisplay_TextChanged(object sender, EventArgs e)
         {
+            int maxLength = 20; // Define la longitud máxima deseada
+            if (txtDisplay.Text.Length > maxLength)
+            {
+                txtDisplay.Text = txtDisplay.Text.Substring(0, maxLength);
+                txtDisplay.SelectionStart = maxLength; // Mueve el cursor al final
+            }
+        }
 
+        private void Calculadora_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            switch (e.KeyChar)
+            {
+                case '0': btn0.PerformClick(); break;
+                case '1': btn1.PerformClick(); break;
+                case '2': btn2.PerformClick(); break;
+                case '3': btn3.PerformClick(); break;
+                case '4': btn4.PerformClick(); break;
+                case '5': btn5.PerformClick(); break;
+                case '6': btn6.PerformClick(); break;
+                case '7': btn7.PerformClick(); break;
+                case '8': btn8.PerformClick(); break;
+                case '9': btn9.PerformClick(); break;
+                case '+': btnMas.PerformClick(); break;
+                case '-': btnMenos.PerformClick(); break;
+                case '*': btnMultiplicar.PerformClick(); break;
+                case '/': btnDividir.PerformClick(); break;
+                case '.': btnP.PerformClick(); break;
+                case '=':
+                case (char)13: // Enter key
+                    btnIgual.PerformClick();
+                    break;
+                case (char)8: // Backspace
+                    btnDel.PerformClick();
+                    break;
+                case '(': button23.PerformClick(); break;
+                case ')': button24.PerformClick(); break;
+                case '^': button17.PerformClick(); break;
+                default:
+                    break;
+            }
+            e.Handled = true; // Evita que el carácter se muestre en el TextBox
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(txtDisplay.Text))
             {
-                // Obtén el último carácter
                 string textoActual = txtDisplay.Text;
                 char ultimoCaracter = textoActual[textoActual.Length - 1];
 
-                // Si el último carácter es "(", verifica si es parte de una función especial
                 if (ultimoCaracter == '(')
                 {
-                    // Verifica si es una función especial (sin, cos, tan, sqrt, log)
                     if (textoActual.EndsWith("sin("))
                     {
-                        txtDisplay.Text = textoActual.Substring(0, textoActual.Length - 4); // Elimina "sin("
+                        txtDisplay.Text = textoActual.Substring(0, textoActual.Length - 4);
                     }
                     else if (textoActual.EndsWith("cos("))
                     {
-                        txtDisplay.Text = textoActual.Substring(0, textoActual.Length - 4); // Elimina "cos("
+                        txtDisplay.Text = textoActual.Substring(0, textoActual.Length - 4);
                     }
                     else if (textoActual.EndsWith("tan("))
                     {
-                        txtDisplay.Text = textoActual.Substring(0, textoActual.Length - 4); // Elimina "tan("
+                        txtDisplay.Text = textoActual.Substring(0, textoActual.Length - 4);
                     }
                     else if (textoActual.EndsWith("sqrt("))
                     {
-                        txtDisplay.Text = textoActual.Substring(0, textoActual.Length - 5); // Elimina "sqrt("
+                        txtDisplay.Text = textoActual.Substring(0, textoActual.Length - 5);
                     }
                     else if (textoActual.EndsWith("log("))
                     {
-                        txtDisplay.Text = textoActual.Substring(0, textoActual.Length - 4); // Elimina "log("
+                        txtDisplay.Text = textoActual.Substring(0, textoActual.Length - 4);
                     }
                     else
                     {
-                        // Si no es una función especial, solo elimina "("
                         txtDisplay.Text = textoActual.Substring(0, textoActual.Length - 1);
                     }
                 }
                 else
                 {
-                    // Si no es "(", simplemente elimina el último carácter
                     txtDisplay.Text = textoActual.Substring(0, textoActual.Length - 1);
                 }
             }

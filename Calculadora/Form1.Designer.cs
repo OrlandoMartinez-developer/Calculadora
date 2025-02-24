@@ -34,10 +34,10 @@ namespace Calculadora
             this.txtDisplay = new System.Windows.Forms.TextBox();
             this.btnIgual = new System.Windows.Forms.Button();
             this.btnP = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button4 = new System.Windows.Forms.Button();
+            this.btnMenos = new System.Windows.Forms.Button();
+            this.btnDividir = new System.Windows.Forms.Button();
             this.btnMas = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
+            this.btnMultiplicar = new System.Windows.Forms.Button();
             this.btn0 = new System.Windows.Forms.Button();
             this.btn1 = new System.Windows.Forms.Button();
             this.btn2 = new System.Windows.Forms.Button();
@@ -92,25 +92,25 @@ namespace Calculadora
             this.btnP.UseVisualStyleBackColor = true;
             this.btnP.Click += new System.EventHandler(this.button2_Click);
             // 
-            // button3
+            // btnMenos
             // 
-            this.button3.Location = new System.Drawing.Point(282, 228);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 3;
-            this.button3.Text = "-";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click_1);
+            this.btnMenos.Location = new System.Drawing.Point(282, 228);
+            this.btnMenos.Name = "btnMenos";
+            this.btnMenos.Size = new System.Drawing.Size(75, 23);
+            this.btnMenos.TabIndex = 3;
+            this.btnMenos.Text = "-";
+            this.btnMenos.UseVisualStyleBackColor = true;
+            this.btnMenos.Click += new System.EventHandler(this.button3_Click_1);
             // 
-            // button4
+            // btnDividir
             // 
-            this.button4.Location = new System.Drawing.Point(282, 170);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 4;
-            this.button4.Text = "÷";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click_1);
+            this.btnDividir.Location = new System.Drawing.Point(282, 170);
+            this.btnDividir.Name = "btnDividir";
+            this.btnDividir.Size = new System.Drawing.Size(75, 23);
+            this.btnDividir.TabIndex = 4;
+            this.btnDividir.Text = "÷";
+            this.btnDividir.UseVisualStyleBackColor = true;
+            this.btnDividir.Click += new System.EventHandler(this.button4_Click_1);
             // 
             // btnMas
             // 
@@ -122,15 +122,15 @@ namespace Calculadora
             this.btnMas.UseVisualStyleBackColor = true;
             this.btnMas.Click += new System.EventHandler(this.btnMas_Click);
             // 
-            // button6
+            // btnMultiplicar
             // 
-            this.button6.Location = new System.Drawing.Point(282, 199);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(75, 23);
-            this.button6.TabIndex = 6;
-            this.button6.Text = "x";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.btnMultiplicar.Location = new System.Drawing.Point(282, 199);
+            this.btnMultiplicar.Name = "btnMultiplicar";
+            this.btnMultiplicar.Size = new System.Drawing.Size(75, 23);
+            this.btnMultiplicar.TabIndex = 6;
+            this.btnMultiplicar.Text = "x";
+            this.btnMultiplicar.UseVisualStyleBackColor = true;
+            this.btnMultiplicar.Click += new System.EventHandler(this.button6_Click);
             // 
             // btn0
             // 
@@ -360,17 +360,17 @@ namespace Calculadora
             this.Controls.Add(this.btn2);
             this.Controls.Add(this.btn1);
             this.Controls.Add(this.btn0);
-            this.Controls.Add(this.button6);
+            this.Controls.Add(this.btnMultiplicar);
             this.Controls.Add(this.btnMas);
-            this.Controls.Add(this.button4);
-            this.Controls.Add(this.button3);
+            this.Controls.Add(this.btnDividir);
+            this.Controls.Add(this.btnMenos);
             this.Controls.Add(this.btnP);
             this.Controls.Add(this.btnIgual);
             this.Controls.Add(this.txtDisplay);
             this.ForeColor = System.Drawing.SystemColors.ControlText;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Calculadora";
-            this.Text = "Calculadora";
+            this.Text = "Calculadora Orlando Martinez";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -379,7 +379,7 @@ namespace Calculadora
 
         private void button22_Click_1(object sender, EventArgs e)
         {
-            txtDisplay.Text += "log(";
+            SeleccionarFuncionEspecial("log");
         }
 
         #endregion
@@ -387,10 +387,10 @@ namespace Calculadora
         private System.Windows.Forms.TextBox txtDisplay;
         private System.Windows.Forms.Button btnIgual;
         private System.Windows.Forms.Button btnP;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button btnMenos;
+        private System.Windows.Forms.Button btnDividir;
         private System.Windows.Forms.Button btnMas;
-        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button btnMultiplicar;
         private System.Windows.Forms.Button btn0;
         private System.Windows.Forms.Button btn1;
         private System.Windows.Forms.Button btn2;
